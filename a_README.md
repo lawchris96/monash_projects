@@ -17,3 +17,6 @@ Data Science Fundamentals Project:
 Data Analysis Project:
 1. Introduction_To_DataAnalysis_Project1
 
+Research Project for IT Professional and Ethics:
+1. DeepFake_Research_Report
+2. DeepFake_Application_Report
