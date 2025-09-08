@@ -1,0 +1,245 @@
+---
+title: "ETW2001_ASSIGNMENT_1"
+author: "Chris Law Zi Qing"
+format: html
+editor: visual
+---
+
+## 2.0 Data Structuring
+
+### 2.0.1 Introduction
+
+This task involves designing and distributing a customer survey for Zus Coffee and then structuring the collected responses using fundamental R data structures. The objective is to demonstrate how real world survey data can be represented through vectors, matrices, data frames, and lists, while also applying basic data cleaning and organisation techniques.
+
+By doing so, the assignment highlights the importance of transforming raw feedback into structured insights that can support better analysis and decision-making.
+
+### 2.0.2 Survey Distribution
+
+All survey responses for this assignment were collected through the following channels:
+
+-   WhatsApp messages via direct message
+
+-   Instagram Stories
+
+### 2.0.3 Data Cleaning
+
+The raw responses were manually cleaned in Google Sheet before being used in R Studio. The dataset was cleaned manually as it contained only 26 responses, making manual correction more efficient than automated scripting.
+
+The primary focus of cleaning was to standardise product names in the “Favorite Drink” column by correcting typos, consolidating variations, and ensuring consistency with actual menu items. This ensured that the data was uniform and ready for analysis without unnecessary complexity.
+
+#### 2.0.3.1 Data Cleaning Process
+
+The cleaning process includes spotting spelling errors, standardizing and consolidating the product name.
+
+For example,
+
+-   spanihs latte -\> Spanish Latte
+
+-   Java chip/ Java chip shake/ Iced Java Chip -\> Java Chip Frappe
+
+<!-- -->
+
+-   Latte -\> Cafe Latte
+
+-   coconut latte -\> Coconut Latte
+
+-   Matcha Latte -\> Not Pistachio Latte
+
+### 2.1 Load CSV Data
+
+```{r}
+zus <- read.csv("zus_responses.csv")
+```
+
+#### 2.1.1 Displaying all the column names
+
+Displaying all column names in the dataset so I can check their exact spelling and avoid errors when referencing them later.
+
+```{r}
+colnames(zus)
+```
+
+### 2.2 Vector Form
+
+#### 2.2.1 Why is vector data structure chosen?
+
+Vector form was chosen to represent the 1–5 star survey ratings because it allows Zus Coffee to focus on a single aspect of customer feedback, such as Drink Quality or Service Speed. Since each rating is numeric and collected on the same scale, a vector is the simplest way to store and analyse these responses.
+
+Using a vector, the company can perform quick operations such as calculating the average star rating, finding the lowest rating, and producing simple summaries. These operations provide immediate insights into which areas are performing well and able to allow management to respond swiftly to customer expectations.
+
+#### 2.2.2 What trade-off exist?
+
+The main trade-off of using vectors in the Zus Coffee survey is that they can only store one type of data at a time. While this works well for numeric star ratings, it means vectors cannot combine other important information such as gender, age group, or customer's favourite drink.
+
+#### 2.2.3 Any existing challenges when cleaning the data manually?
+
+Since the survey questions were mandatory, there were no missing values in the dataset. The main challenge was ensuring that all numeric ratings were recorded correctly within the 1–5 star range, so they could be stored cleanly in vectors.
+
+This step was necessary to make sure the vectors contained uniform values, which allowed simple operations to work correctly.
+
+```{r}
+# Create a vector from one column, e.g., drink quality ratings
+drink_quality_vector <- zus$Drink.Quality
+
+# Check result
+print(drink_quality_vector)
+```
+
+### 2.3 Matrix
+
+#### 2.3.1 Why is matrix data structure chosen?
+
+Matrix form was chosen to represent the multiple 1–5 star rating questions in the Zus Coffee survey, such as Drink Quality, Pricing, Ambience, Speed of Service, and Mobile App Experience. A matrix is well suited because it can store numeric data of the same type in two dimensions from, where each row represents a respondent and each column represents a rating category.
+
+This structure makes it easy for Zus Coffee to compare different aspects of service side by side. Simple operation like applying functions across rows and columns allow the company to quickly identify strengths and weaknesses in performance. For example, management can immediately see if Pricing consistently receives lower scores than Ambience, or if overall satisfaction varies greatly between respondents.
+
+#### 2.3.2 What trade-off exist?
+
+The main trade-off of using a matrix is that it can only store one data type at a time, which in this case is numeric star ratings. While this makes it powerful for comparing and summarising customer ratings across multiple categories, it also means that important categorical information such as gender, age group, or favourite drink cannot be stored in the same structure.
+
+As a result, matrices are excellent for analysing numerical performance measures like average scores, but they are limited when trying to connect ratings with customer demographics or behaviours.
+
+#### 2.3.3 Any existing challenges when cleaning the data manually?
+
+Similarly to vector, since all rating questions were mandatory, the challenge was not missing data but ensuring consistency across all rating fields. Each column had to contain only valid star ratings from 1 to 5 so they could be combined into a pure number structure.
+
+```{r}
+# Create a matrix to store all rating questions together
+ratings_matrix <- matrix(
+  c(zus$Drink.Quality, 
+    zus$Pricing, 
+    zus$Ambience, 
+    zus$Speed.of.Service, 
+    zus$Mobile.App.Experience),
+  
+  # Number of respondents (rows)
+  nrow = nrow(zus),
+  
+  # Number of rating categories (columns)
+  ncol = 5,
+  
+  # Fill column by column to match structure
+  byrow = FALSE,
+  dimnames = list(
+    # Add row names = Respondent 1 ... Respondent 26
+    paste("Respondent", seq_len(nrow(zus))),
+    
+    # Replace audience friendly column names for categories
+    c("Drink Quality", "Pricing", "Ambience", "Speed", "App Experience")
+  )
+)
+
+# Check result
+print(ratings_matrix)
+```
+
+### 2.4 data.frame
+
+#### 2.4.1 Why is data.frame data structure chosen?
+
+The data frame was chosen because it can store different types of data together, which makes it most suitable for the Zus Coffee survey. The dataset contained numeric star ratings for service aspects, along with categorical information such as age group, gender, favourite drink, and preference for Zus Coffee.
+
+Unlike vectors or matrices, the data frame is a powerful tool to allow these mixed data types to be combined in one structured table, where each row represents a respondent and each column represents a variable. For Zus Coffee, this structure makes it possible to link customer demographics with their ratings, enabling more meaningful analysis such as whether certain age groups rate pricing lower, or if frequent visitors give higher service scores. It also prepares the data for advanced analysis and visualisation, making the data frame the most practical and powerful structure for this survey.
+
+#### 2.4.2 What trade-off exist?
+
+The trade-off of using a data frame is that, while it can store mixed data types in one structure, this flexibility comes with added complexity. Operations such as calculating averages are not as direct as in vectors or matrices because data frames include both numeric and categorical variables where extra steps are required to select only the numeric columns before analysis. In addition, larger data frames can become less efficient to process compared to simpler structures.
+
+For the Zus Coffee survey, the data frame is the most powerful structure for combining ratings with demographics, but it requires more careful handling to ensure calculations are applied only to the appropriate variables.
+
+#### 2.4.3 Any existing challenges when cleaning the data manually?
+
+Unlike the numeric rating columns, the data frame also contained categorical and open-ended text responses such as gender, visit frequency, and favourite drink. The main challenge was ensuring consistency in these fields, since small variations (e.g., “Cafe Latte” vs “ Cafè Lattte” or different capitalisations) could result in separate categories being created in R.
+
+To address this, the text fields were standardised in Google Sheet before import, consolidating variations and aligning them with actual menu items. This ensured the data frame preserved meaningful categories and avoided duplication errors during analysis.
+
+```{r}
+# Creating vectors for each column in the dataframe
+age <- zus$How.old.are.you
+gender <- zus$What.is.your.gender
+visits <- zus$How.frequent.do.you.visit.Zus.Coffee.per.month
+drink_quality <- zus$Drink.Quality
+pricing <- zus$Pricing
+ambience <- zus$Ambience
+speed <- zus$Speed.of.Service
+app <- zus$Mobile.App.Experience
+fav_drink <- zus$What.is.your.favourite.drink
+prefer_zus <- zus$Do.you.prefer.Zus.over.other.brands
+
+# Combining the vectors into a dataframe
+zus_df <- data.frame(
+  Age = age,
+  Gender = gender,
+  Visits = visits,
+  DrinkQuality = drink_quality,
+  Pricing = pricing,
+  Ambience = ambience,
+  Speed = speed,
+  AppExperience = app,
+  FavouriteDrink = fav_drink,
+  PreferZus = prefer_zus
+)
+
+# Quick sanity check to check if data is displayed
+print(zus_df)
+
+# Accessing and printing the Drink Quality column
+print(zus_df$DrinkQuality)
+
+# Summarising the average Drink Quality rating
+avg_quality <- mean(zus_df$DrinkQuality)
+print(paste("Average Drink Quality Rating:", avg_quality))
+
+# Adding a new column for overall satisfaction (mean of all ratings)
+zus_df$OverallSatisfaction <- rowMeans(zus_df[, c("DrinkQuality", 
+                                                  "Pricing", 
+                                                  "Ambience", 
+                                                  "Speed", 
+                                                  "AppExperience")])
+
+# Printing the updated dataframe
+print(zus_df)
+
+# Overall Satisfaction was added to summarise all individual service ratings into one score per customer. This provides a quick indicator of general customer sentiment, making it easier for Zus Coffee to identify overall trends and compare satisfaction across groups.
+```
+
+### 2.5 List
+
+#### 2.5.1 Why is list data structure chosen?
+
+The list was chosen because it can allow different types of objects to be stored together. In the Zus Coffee survey, the list made it possible to combine vectors, matrices, and data frames into one container, so that individual ratings, grouped rating tables, and full customer records could all be accessed from a single object.
+
+This flexibility reflects how real survey data often contains a mix of numeric ratings and categorical information. For Zus Coffee, the list is valuable because it provides a way to organise the data set hierarchically, such as grouping customers by age group and gender, while still retaining all the details of their ratings and behaviours.
+
+This structure supports both summary analysis and deeper exploration, making the list a practical tool for handling complex, multi-layered customer data.
+
+#### 2.5.2 What trade-off exist?
+
+The main trade-off of using a list is that since lists can hold many different types of objects, extracting or summarising the data often requires extra code and careful indexing. Also, in order to use list, we have to pre-compute the values before using it, this data structure can be flexible but this serve as a more complicated data structure to use too.
+
+This makes simple operations less straightforward compared to other structures. In the Zus Coffee survey, the list was useful for grouping customers by age and gender, but it was less convenient for quick numerical analysis because the information was stored in a nested format.
+
+#### 2.5.3 Any existing challenges when cleaning the data manually?
+
+There were no additional cleaning was required for the list itself because it was built on top of data that had already been cleaned and organised in vectors, matrices, and data frames.
+
+The main challenge aside from data cleaning was deciding which components to include in the list to best represent the survey data set as poor combination will not lead to optimal decision making.
+
+```{r}
+# Creating a list for Zus Coffee survey data
+zus_list <- list(
+  # a vector
+  drink_quality_vector = zus$Drink.Quality, 
+  # the matrix of ratings
+  ratings_matrix = ratings_matrix,         
+  # the full data frame
+  survey_dataframe = zus_df                   
+)
+
+# Printing the list
+print(zus_list)
+```
+
+## 2.6 Conclusion
+
+As this task demonstrated, vectors, matrices, data frames, and lists are all different ways to organise survey data, each with several strengths and weaknesses. Data frames were the most powerful structure for analysis as they linked categorical and numeric information. Although the list could combine different structures, it was less efficient when it came to direct analysis. This task demonstrated Zus Coffee's reliance on structured data and how it builds a solid foundation for future advanced analytics with reliable insights.
