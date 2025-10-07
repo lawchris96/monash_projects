@@ -1,1 +1,1 @@
-I have consolidated all the main projects that I have done in my degree which includes coding task, research task and designing task, please feel free to look at them! I have also done data visualisation via Tableau, the link is provided in the file named Tableau_Projects
+I have consolidated all the major projects that I have done in my degree which includes coding task, research task and designing task, please feel free to look at them! I have also done data visualisation via Tableau, the link is provided in the file named Tableau_Projects
